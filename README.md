@@ -77,6 +77,7 @@ DB_NAME=flipkart_clone
 DB_PORT=3306
 PORT=5000
 JWT_SECRET=replace-with-a-secure-secret
+ALLOWED_ORIGINS=http://localhost:3000
 ```
 
 Example frontend config:
@@ -116,6 +117,43 @@ Apps will be available at:
 
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:5000`
+
+## Deployment
+
+### Frontend on Vercel
+
+Deploy the `frontend` directory as a Vite project.
+
+- Framework preset: `Vite`
+- Root directory: `frontend`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Environment variable: `VITE_API_URL=https://your-backend-url`
+
+SPA routing is already configured with [frontend/vercel.json](/d:/Flipkart%20Clone/frontend/vercel.json).
+
+### Backend on Railway
+
+Deploy the `backend` directory as a Node.js service.
+
+- Root directory: `backend`
+- Start command: `npm start`
+
+Set these environment variables in Railway:
+
+```env
+PORT=5000
+NODE_ENV=production
+JWT_SECRET=replace-with-a-secure-secret
+ALLOWED_ORIGINS=https://your-vercel-app.vercel.app
+```
+
+For the database, either:
+
+- provision a Railway MySQL service and use `MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE`, or
+- provide a `MYSQL_URL`/`DATABASE_URL` connection string.
+
+The backend now supports both the local `DB_*` variables and Railway-style MySQL variables.
 
 ## Available Scripts
 

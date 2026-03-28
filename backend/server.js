@@ -4,9 +4,23 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const configuredOrigins = [
+  ...(process.env.ALLOWED_ORIGINS || '').split(','),
+  process.env.FRONTEND_URL || '',
+].map((origin) => origin.trim()).filter(Boolean);
 
 // ================= MIDDLEWARE =================
-app.use(cors());
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || configuredOrigins.length === 0 || configuredOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // ================= ROUTES =================
@@ -35,12 +49,12 @@ const pool = require('./config/database');
 async function testDB() {
   try {
     const connection = await pool.getConnection();
-    const [rows] = await connection.execute("SELECT COUNT(*) as count FROM products");
+    const [rows] = await connection.execute('SELECT COUNT(*) as count FROM products');
     connection.release();
-    console.log("MySQL Connected Successfully");
+    console.log('MySQL Connected Successfully');
     console.log(`Products in DB: ${rows[0].count}`);
   } catch (err) {
-    console.error("Database Connection Failed:", err.message);
+    console.error('Database Connection Failed:', err.message);
   }
 }
 
@@ -54,7 +68,6 @@ app.use(errorHandler);
 
 // ================= SERVER START =================
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Database: MySQL (flipkart_clone)`);
+  console.log(`Server running on http://localhost:${PORT}`);
+  console.log('Database: MySQL');
 });
-
