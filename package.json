@@ -1,0 +1,18 @@
+{
+  "name": "flipkart-clone",
+  "version": "1.0.0",
+  "description": "Full-stack e-commerce application replicating Flipkart's design and functionality",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend start\" \"npm --prefix frontend dev\"",
+    "backend": "npm --prefix backend start",
+    "frontend": "npm --prefix frontend dev",
+    "install-all": "npm install && npm --prefix backend install && npm --prefix frontend install"
+  },
+  "keywords": ["ecommerce", "flipkart", "react", "express", "mysql"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

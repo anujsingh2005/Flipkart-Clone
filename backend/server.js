@@ -1,0 +1,60 @@
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// ================= MIDDLEWARE =================
+app.use(cors());
+app.use(express.json());
+
+// ================= ROUTES =================
+const productRoutes = require('./routes/products');
+const cartRoutes = require('./routes/cart');
+const orderRoutes = require('./routes/orders');
+const userRoutes = require('./routes/users');
+const authRoutes = require('./routes/auth');
+const wishlistRoutes = require('./routes/wishlist');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+
+// ================= HEALTH CHECK =================
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'Server is running' });
+});
+
+// ================= DATABASE =================
+const pool = require('./config/database');
+
+async function testDB() {
+  try {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.execute("SELECT COUNT(*) as count FROM products");
+    connection.release();
+    console.log("MySQL Connected Successfully");
+    console.log(`Products in DB: ${rows[0].count}`);
+  } catch (err) {
+    console.error("Database Connection Failed:", err.message);
+  }
+}
+
+testDB();
+
+// ================= ERROR HANDLING =================
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+// ================= SERVER START =================
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📊 Database: MySQL (flipkart_clone)`);
+});
+
