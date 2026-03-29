@@ -6,9 +6,13 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const fallbackAllowedOrigins = [
+  'https://flipkart-clone-production-53aa.up.railway.app',
+];
 const configuredOrigins = [
   ...(process.env.ALLOWED_ORIGINS || '').split(','),
   process.env.FRONTEND_URL || '',
+  ...fallbackAllowedOrigins,
 ].map((origin) => origin.trim()).filter(Boolean);
 
 // ================= MIDDLEWARE =================
