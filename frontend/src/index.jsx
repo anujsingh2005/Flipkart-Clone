@@ -14,6 +14,7 @@ const apiBaseUrl =
 
 if (apiBaseUrl) {
   axios.defaults.baseURL = apiBaseUrl.replace(/\/+$/, '');
+  console.info('API base URL:', axios.defaults.baseURL);
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
