@@ -8,6 +8,27 @@ const escapeXml = (value = '') =>
 
 const createSvgDataUrl = (svg) => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 
+const getApiAssetBaseUrl = () =>
+  import.meta.env.VITE_API_URL?.trim()?.replace(/\/+$/, '') ||
+  (typeof window !== 'undefined' ? window.location.origin : '');
+
+const resolveProductImageUrl = (image) => {
+  if (typeof image !== 'string') {
+    return image;
+  }
+
+  if (/^(data:|https?:\/\/|blob:)/i.test(image)) {
+    return image;
+  }
+
+  if (image.startsWith('/')) {
+    const assetBaseUrl = getApiAssetBaseUrl();
+    return assetBaseUrl ? `${assetBaseUrl}${image}` : image;
+  }
+
+  return image;
+};
+
 const getPalette = (label) => {
   const value = label.toLowerCase();
 
@@ -180,7 +201,7 @@ export const normalizeProductImages = (images, productName = '') => {
       return generateProductIllustration(productName || placeholderLabel);
     }
 
-    return image;
+    return resolveProductImageUrl(image);
   });
 };
 

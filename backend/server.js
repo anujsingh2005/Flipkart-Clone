@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -22,6 +24,12 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+
+const productImagesDirectory = path.resolve(__dirname, '../frontend/public/products');
+
+if (fs.existsSync(productImagesDirectory)) {
+  app.use('/products', express.static(productImagesDirectory));
+}
 
 // ================= ROUTES =================
 const productRoutes = require('./routes/products');
